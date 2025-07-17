@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+
+  <button onclick="history.back()">Go Back</button>
+
+    <h1>Cars Listing<h1>
+
+      <h2>Model</h2>
+<p>Model dropdown menu.</p>
+
+<div class="dropdown">
+  <button class="dropbtn">▼</button>
+  <div class="dropdown-content">
+    {% for model in models %}
+    <a href="#">{{ model[0] }}</a>
+    {% endfor %}
+  </div>
+</div>
+    <table>
+        <tr>
+          <th>Make</th>
+          <th>Model</th>
+          <th>Year</th>
+          <th>Kms</th>          
+          <th>Price</th>
+          <TH>Type</TH>
+          <th>Details</th>
+        </tr>
+        {% for item in cars %}
+        <tr>
+            <td>{{ item[0] }}</td>
+          <td>{{ item[1] }}</td>
+          <td>{{ item[2] }}</td>
+          <td>{{ item[3] }}</td>
+          <td>{{ item[4] }}</td>   
+          <td>{{ item[5] }}</td>   
+          <td>
+            <a href="/gallery?highlight={{ (item[0] ~ ' ' ~ item[1])|urlencode }}" style="padding:6px 16px; border-radius:6px; background:#1976d2; color:#fff; border:none; cursor:pointer; text-decoration:none; display:inline-block;">Details</a>
+          </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+{% include 'footer.html' %}
+</body>
+</html>
+

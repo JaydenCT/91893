@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        #main-content {
+            flex: 1 0 auto;
+        }
+        h1 {
+            text-align: center;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 50px;
+            margin-top: 0px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .card img {
+            width: 180px;
+            height: 120px;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+        }
+        .card h3 {
+            padding: 10px;
+            margin: 0;
+            text-align: center;
+        }
+        .search-container {
+            max-width: 400px;
+            margin: 30px auto 20px auto;
+            text-align: center;
+        }
+        .search-container input[type="text"] {
+            padding: 10px;
+            width: 70%;
+            font-size: 16px;
+        }
+        .search-container button {
+            padding: 10px 16px;
+            font-size: 16px;
+        }
+        .results-table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 90%;
+            max-width: 800px;
+        }
+        .results-table th, .results-table td {
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .results-table th {
+            background: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div id="main-content">
+    <div style="position: absolute; top: 18px; right: 24px; z-index: 10;">
+        <button onclick="window.location.href='/favourites'" style="padding: 10px 18px; font-size: 16px; border-radius: 8px; background: #FFD600; color: #333; border: none; cursor: pointer; font-weight: bold;">Favourites</button>
+    </div>
+    <button onclick="location.href='/'">Home</button>
+    <button onclick="location.href='/cars'">Cars List</button>
+    <button onclick="location.href='/gallery'">Gallery</button>
+    <h1><img src="{{url_for('static', filename='images/logo.png')}}" alt="logo"></h1>
+    <h1>Library of Cars</h1>
+
+    <div class="search-container">
+        <form id="car-search-form" action="/search" method="get" style="display: flex; justify-content: center; align-items: center; gap: 10px;">
+        <select id="car-dropdown" name="q" onchange="this.form.submit()" style="padding:10px; width:80%; font-size:16px;">
+        <option value="">Select a car...</option>
+        <option value="toyota corolla">Toyota Corolla</option>
+        <option value="ford focus">Ford Focus</option>
+        <option value="suzuki swift">Suzuki Swift</option>
+        <option value="hyundai beam">Hyundai Beam</option>
+        <option value="honda civic">Honda Civic</option>
+        <option value="toyota camry">Toyota Camry</option>
+        <option value="hyundai revole"> Hyundai Revole</option>
+        <option value="lexus etter">Lexus Etter</option>
+        <option value="tesla surface">Tesla Surface</option>
+        <option value="suzuki sport">Suzuki Sport</option>
+        <option value="kia eternal">Kia Eternal</option>
+        </select>
+        {% if cars is defined and cars and search_query %}
+        <button type="button" onclick="clearDropdown()" style="padding: 10px 16px; font-size: 16px; border-radius: 6px; background: #eee; color: #333; border: 1px solid #bbb; cursor: pointer;">Clear</button>
+        {% endif %}
+        </form>
+        <script>
+        function clearDropdown() {
+            document.getElementById('car-dropdown').selectedIndex = 0;
+            window.location.href = '/';
+        }
+        </script>
+        {% if cars is defined and cars and search_query %}
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; margin: 30px auto 20px auto; max-width: 900px;">
+                {% for car in cars %}
+                    <div style="background: #fff; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.10); padding: 20px; text-align: center; position: relative;">                        <span class="fav-star" onclick="toggleStar(this, '{{ car[0] }} {{ car[1] }}')" style="position:absolute;top:10px;right:14px;font-size:1.7em;cursor:pointer;user-select:none;color:#FFD600;">☆</span>
+                        <h2 style="margin-bottom: 10px;">{{ car[0] }} {{ car[1] }}</h2>
+                        {% set model = car[1]|lower %}
+                        {% set car_img = None %}
+                        {% if 'corolla' in model %}
+                            {% set car_img = 'car1.jpg' %}
+                        {% elif 'focus' in model %}
+                            {% set car_img = 'car2.jpg' %}
+                        {% elif 'swift' in model %}
+                            {% set car_img = 'car3.jpg' %}
+                        {% elif 'beam' in model %}
+                            {% set car_img = 'car4.jpg' %}
+                        {% elif 'civic' in model %}
+                            {% set car_img = 'car5.jpg' %}
+                        {% elif 'camry' in model %}
+                            {% set car_img = 'c1.jpg' %}
+                        {% elif 'revole' in model %}
+                            {% set car_img = 'c2.jpg' %}
+                        {% elif 'etter' in model %}
+                            {% set car_img = 'c3.jpg' %}
+                        {% elif 'surface' in model %}
+                            {% set car_img = 'c4.jpg' %}
+                        {% elif 'sport' in model %}
+                            {% set car_img = 'c5.jpg' %}
+                        {% elif 'eternal' in model %}
+                            {% set car_img = 'c6.jpg' %}
+                        {% endif %}
+                        {% if car_img %}
+                            <img src="{{ url_for('static', filename='images/' ~ car_img) }}" alt="{{ car[1] }}" style="width: 90%; max-width: 200px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); margin-bottom: 10px; vertical-align: middle;">
+                        {% else %}
+                            <div style="color: #888; display: inline-block; vertical-align: middle;">No image available</div>
+                        {% endif %}
+                        <div class="car-details-box" style="margin-top: 10px; font-size: 1em; color: #333; background: #f7f7f7; border-radius: 8px; padding: 12px 8px;">
+                            <strong>Year:</strong> {{ car[2] }}<br>
+                            <strong>KMs:</strong> {{ car[3] }}<br>
+                            <strong>Price:</strong> ${{ '{:,.2f}'.format(car[4]) }}<br>
+                            <strong>Transmission:</strong> {{ car[5] }}
+                            <div style="margin-top: 12px;">
+                                <label for="desc-{{ loop.index0 }}" style="font-weight:bold;">Description:</label><br>
+                                <textarea id="desc-{{ loop.index0 }}" class="car-desc" style="width:95%;min-height:48px;resize:vertical;">{{ {
+                                    'toyota corolla': 'A reliable and efficient compact car, perfect for city driving.',
+                                    'ford focus': 'A popular sedan known for its fuel efficiency and comfort.',
+                                    'suzuki swift': 'A modern hatchback with advanced features and style.',
+                                    'hyundai beam': 'A sporty and agile car, great for urban environments.',
+                                    'honda civic': 'A world-renowned sedan for reliability and value.',
+                                    'toyota camry': 'A unique model with a distinctive look.',
+                                    'hyundai revole': 'A compact car with great mileage.',
+                                    'lexus etter': 'A stylish car with a comfortable interior.',
+                                    'tesla surface': 'A practical car for everyday use.',
+                                    'suzuki sport': 'A versatile car with ample space.',
+                                    'kia eternal': 'A modern car with advanced safety features.'
+                                }[(car[0] ~ ' ' ~ car[1])|lower]|default('No description available.') }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+    </div>
+    <div style="display: flex; justify-content: center; align-items: flex-start; gap: 32px; margin: 0 0 18px 0;">
+        <div style="max-width: 340px; background: #fffbe7; border-radius: 14px; box-shadow: 0 2px 8px rgba(255,214,0,0.10); padding: 22px 18px 18px 18px; text-align: center; border: 2px solid #FFD600;">
+            <h2 style="color:#1976d2; margin-bottom: 8px;">Featured Deal: Suzuki Swift</h2>
+            <a href="/gallery?highlight=Suzuki%20Swift" style="display:block;"><img src="{{ url_for('static', filename='images/car4.jpg') }}" alt="Suzuki Swift" style="width: 220px; height: 140px; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); margin-bottom: 12px;"></a>
+            <div style="font-size:1.1em; color:#333; margin-bottom: 8px;">
+                <strong>Year:</strong> 2017 &nbsp; | &nbsp;
+                <strong>KMs:</strong> 41,000 &nbsp; | &nbsp;
+                <strong>Price:</strong> $13,999 &nbsp; | &nbsp;
+                <strong>Transmission:</strong> Manual
+            </div>
+            <div style="font-size:1em; color:#444;">A sporty and agile car, great for urban environments. Reliable, fun to drive, and excellent on fuel!</div>
+        </div>
+        <div style="flex: 1; min-width: 320px; max-width: 700px; display: flex; flex-direction: column; align-items: center;">
+            <h3 style="text-align:center;">~ Our Top Cars ~</h3>
+            <div class="gallery">
+                <div class="card">
+                    <a href="/gallery?highlight=Ford%20Focus" style="display:block;"><img src="{{url_for('static', filename='images/car1.jpg')}}" alt="Car1"></a>
+                    <h3 style="text-align:center;">Toyota Corolla</h3>
+                </div>
+                <div class="card">
+                    <a href="/gallery?highlight=Honda%20Civic" style="display:block;"><img src="{{url_for('static', filename='images/car2.jpg')}}" alt="Car 2"></a>
+                    <h3 style="text-align:center;">Ford Focus</h3>
+                </div>
+                <div class="card">
+                    <a href="/gallery?highlight=Hyundai%20Beam" style="display:block;"><img src="{{url_for('static', filename='images/car3.jpg')}}" alt="Car 3"></a>
+                    <h3 style="text-align:center;">Suzuki Swift</h3>
+                </div>
+                <div class="card">
+                    <a href="/gallery?highlight=Suzuki%20Swift" style="display:block;"><img src="{{url_for('static', filename='images/car4.jpg')}}" alt="Car 4"></a>
+                    <h3 style="text-align:center;">Hyundai Beam</h3>
+                </div>
+                <!-- Add more cars as needed -->
+            </div>
+        </div>
+        <div style="max-width: 340px; background: #e7f3ff; border-radius: 14px; box-shadow: 0 2px 8px rgba(25,118,210,0.10); padding: 22px 18px 18px 18px; text-align: center; border: 2px solid #1976d2;">
+            <h2 style="color:#1976d2; margin-bottom: 8px;">Featured Deal: Honda Civic</h2>
+            <a href="/gallery?highlight=Honda%20Civic" style="display:block;"><img src="{{ url_for('static', filename='images/car2.jpg') }}" alt="Honda Civic" style="width: 220px; height: 140px; object-fit: cover; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); margin-bottom: 12px;"></a>
+            <div style="font-size:1.1em; color:#333; margin-bottom: 8px;">
+                <strong>Year:</strong> 2019 &nbsp; | &nbsp;
+                <strong>KMs:</strong> 28,000 &nbsp; | &nbsp;
+                <strong>Price:</strong> $17,999 &nbsp; | &nbsp;
+                <strong>Transmission:</strong> Automatic
+            </div>
+            <div style="font-size:1em; color:#444;">A popular sedan known for its fuel efficiency and comfort.</div>
+        </div>
+    </div>
+    <script>
+    function getFavourites() {
+        return JSON.parse(localStorage.getItem('favouriteCars') || '[]');
+    }
+    function setFavourites(favs) {
+        localStorage.setItem('favouriteCars', JSON.stringify(favs));
+    }
+    function toggleStar(el, carName) {
+        let favs = getFavourites();
+        if (el.textContent === '☆') {
+            el.textContent = '★';
+            if (!favs.includes(carName)) favs.push(carName);
+        } else {
+            el.textContent = '☆';
+            favs = favs.filter(n => n !== carName);
+        }
+        setFavourites(favs);
+    }
+    document.addEventListener('DOMContentLoaded', function() {
+        let favs = getFavourites();
+        document.querySelectorAll('.fav-star').forEach(function(star) {
+            var card = star.closest('div');
+            var carName = card.querySelector('h2').textContent.trim();
+            if (favs.includes(carName)) {
+                star.textContent = '★';
+            }
+        });
+    });
+    </script>
+
+
+    </div>
+<footer style="width:100%;background:#222;color:#fff;padding:28px 0 18px 0;margin-top:60px;text-align:center;font-size:1.1em;letter-spacing:0.5px;">
+        <div style="max-width:600px;margin:0 auto;">
+            <strong>Contact: Jayden Thalari</strong><br>
+            Phone: <a href="tel:5551234567" style="color:#FFD600;text-decoration:none;">(555) 123-4567</a><br>
+            Email: <a href="mailto:jayden.thalari@email.com" style="color:#FFD600;text-decoration:none;">jayden.thalari@email.com</a><br>
+            &copy; {{ 2023 }} Jayden Thalari. All rights reserved.
+        </div>
+    </footer>
+</body>
+</html>

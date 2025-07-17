@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favourites</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #fafafa;
+        }
+        .fav-list {
+            margin: 0 auto 24px auto;
+            max-width: 900px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            padding: 16px 24px;
+            font-size: 1.1em;
+        }
+        .fav-list strong {
+            color: #1976d2;
+        }
+        .fav-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 24px;
+            margin: 30px auto 20px auto;
+            max-width: 900px;
+        }
+        .fav-card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        .fav-star {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            font-size: 1.7em;
+            color: #FFD600;
+            user-select: none;
+            cursor: pointer;
+        }
+        .car-details-box {
+            margin-top: 10px;
+            font-size: 1em;
+            color: #333;
+            background: #f7f7f7;
+            border-radius: 8px;
+            padding: 12px 8px;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="window.location.href='/'" style="margin-bottom: 18px;">Home</button>
+    <h1>Favourited Cars</h1>
+    <div class="fav-list" id="favList"></div>
+    <div class="fav-gallery" id="favGallery"></div>
+    <script>
+    // Car data for mapping
+    const carData = [
+        {name: 'Toyota Corolla', img: 'car1.jpg', year: 2018, kms: 35000, price: 15999, transmission: 'Automatic', desc: 'A reliable and efficient compact car, perfect for city driving.'},
+        {name: 'Ford Focus', img: 'car2.jpg', year: 2019, kms: 28000, price: 17999, transmission: 'Automatic', desc: 'A popular sedan known for its fuel efficiency and comfort.'},
+        {name: 'Suzuki Swift', img: 'car3.jpg', year: 2020, kms: 22000, price: 16999, transmission: 'Automatic', desc: 'A modern hatchback with advanced features and style.'},
+        {name: 'Hyundai Beam', img: 'car4.jpg', year: 2017, kms: 41000, price: 13999, transmission: 'Manual', desc: 'A sporty and agile car, great for urban environments.'},
+        {name: 'Honda Civic', img: 'car5.jpg', year: 2018, kms: 33000, price: 16499, transmission: 'Automatic', desc: 'A world-renowned sedan for reliability and value.'},
+        {name: 'Toyota Camry', img: 'c1.jpg', year: 2021, kms: 12000, price: 20999, transmission: 'Automatic', desc: 'A unique model with a distinctive look.'},
+        {name: 'Hyundai Revole', img: 'c2.jpg', year: 2020, kms: 18000, price: 19999, transmission: 'Automatic', desc: 'A compact car with great mileage.'},
+        {name: 'Lexus Etter', img: 'c3.jpg', year: 2019, kms: 25000, price: 18999, transmission: 'Manual', desc: 'A stylish car with a comfortable interior.'},
+        {name: 'Tesla Surface', img: 'c4.jpg', year: 2018, kms: 37000, price: 15999, transmission: 'Automatic', desc: 'A practical car for everyday use.'},
+        {name: 'Suzuki Sport', img: 'c5.jpg', year: 2021, kms: 9000, price: 21999, transmission: 'Automatic', desc: 'A versatile car with ample space.'},
+        {name: 'Kia Eternal', img: 'c6.jpg', year: 2022, kms: 5000, price: 23999, transmission: 'Automatic', desc: 'A modern car with advanced safety features.'}
+    ];
+    // Get favourites from localStorage
+    function getFavourites() {
+        return JSON.parse(localStorage.getItem('favouriteCars') || '[]');
+    }
+    function removeFavourite(name) {
+        let favs = getFavourites();
+        favs = favs.filter(n => n !== name);
+        localStorage.setItem('favouriteCars', JSON.stringify(favs));
+        renderFavourites();
+    }
+    function renderFavourites() {
+        const favs = getFavourites();
+        const gallery = document.getElementById('favGallery');
+        const favList = document.getElementById('favList');
+        gallery.innerHTML = '';
+        favList.innerHTML = '';
+        if (favs.length === 0) {
+            favList.innerHTML = '<div style="color:#888;">No favourites yet. Go back and star some cars!</div>';
+            return;
+        }
+        favList.innerHTML = '<strong>Favourited Cars:</strong> ' + favs.map(name => `<span style=\"margin-right:12px;\">${name}</span>`).join('');
+        favs.forEach(name => {
+            const car = carData.find(c => c.name === name);
+            if (!car) return;
+            gallery.innerHTML += `
+            <div class="fav-card">
+                <span class="fav-star" onclick="removeFavourite('${name.replace(/'/g, "\\'")}')">★</span>
+                <h2 style="margin-bottom: 10px;">${car.name}</h2>
+                <img src="/static/images/${car.img}" alt="${car.name}" style="width: 90%; max-width: 200px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.12); margin-bottom: 10px; vertical-align: middle;">
+                <div class="car-details-box">
+                    <strong>Year:</strong> ${car.year}<br>
+                    <strong>KMs:</strong> ${car.kms}<br>
+                    <strong>Price:</strong> $${car.price.toLocaleString()}<br>
+                    <strong>Transmission:</strong> ${car.transmission}
+                    <div style="margin-top: 12px;">
+                        <label style="font-weight:bold;">Description:</label><br>
+                        <textarea style="width:95%;min-height:48px;resize:vertical;">${car.desc}</textarea>
+                    </div>
+                </div>
+            </div>`;
+        });
+    }
+    renderFavourites();
+    </script>
+{% include 'footer.html' %}
+</body>
+</html>
