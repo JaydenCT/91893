@@ -69,7 +69,7 @@ def favourites():
 
 @app.route("/search")
 def search():
-    from flask import request
+    from flask import request # type: ignore
     query = request.args.get('q', '').strip()
     cars = []
     if query:
