@@ -91,6 +91,6 @@ def search():
     return render_template("home.html", cars=cars, search_query=query)
 
 if __name__ == "__main__":
-    app.run(debug=False)
+    app.run()
 
 
