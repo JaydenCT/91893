@@ -37,6 +37,10 @@ def index():
     results = cursor.fetchall()
     return render_template("home.html", cars=results)
 
+@app.route("/home2", methods=["GET"])
+def home():
+    return render_template("home2.html")
+
 @app.route("/cars")
 def cars():
     cursor = get_db().cursor()
